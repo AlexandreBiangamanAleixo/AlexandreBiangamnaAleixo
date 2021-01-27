@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<title>Lading Page</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="E-Book sobre setup social">
+    <meta name="author" content="Alexandre Biangaman Aleixo">    
+	<link href="landpage.css" rel="stylesheet">
+
+	 <!-- Adicionando Javascript -->
+    <script>
+    
+    function limpa_formulário_cep() {
+            //Limpa valores do formulário de cep.
+            document.getElementById('rua').value=("");
+            document.getElementById('bairro').value=("");
+            document.getElementById('cidade').value=("");
+            document.getElementById('uf').value=("");
+            document.getElementById('ibge').value=("");
+    }
+
+    function meu_callback(conteudo) {
+        if (!("erro" in conteudo)) {
+            //Atualiza os campos com os valores.
+            document.getElementById('rua').value=(conteudo.logradouro);
+            document.getElementById('bairro').value=(conteudo.bairro);
+            document.getElementById('cidade').value=(conteudo.localidade);
+            document.getElementById('uf').value=(conteudo.uf);
+            document.getElementById('ibge').value=(conteudo.ibge);
+        } //end if.
+        else {
+            //CEP não Encontrado.
+            limpa_formulário_cep();
+            alert("CEP não encontrado.");
+        }
+    }
+        
+    function pesquisacep(valor) {
+
+        //Nova variável "cep" somente com dígitos.
+        var cep = valor.replace(/\D/g, '');
+
+        //Verifica se campo cep possui valor informado.
+        if (cep != "") {
+
+            //Expressão regular para validar o CEP.
+            var validacep = /^[0-9]{8}$/;
+
+            //Valida o formato do CEP.
+            if(validacep.test(cep)) {
+
+                //Preenche os campos com "..." enquanto consulta webservice.
+                document.getElementById('rua').value="...";
+                document.getElementById('bairro').value="...";
+                document.getElementById('cidade').value="...";
+                document.getElementById('uf').value="...";
+                document.getElementById('ibge').value="...";
+
+                //Cria um elemento javascript.
+                var script = document.createElement('script');
+
+                //Sincroniza com o callback.
+                script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
+
+                //Insere script no documento e carrega o conteúdo.
+                document.body.appendChild(script);
+
+            } //end if.
+            else {
+                //cep é inválido.
+                limpa_formulário_cep();
+                alert("Formato de CEP inválido.");
+            }
+        } //end if.
+        else {
+            //cep sem valor, limpa formulário.
+            limpa_formulário_cep();
+        }
+    };
+
+    </script>
+</head>
+<body>
+<div id="topo">
+		 Ebook Setup Social
+</div>
+<div id="corpo">
+		<p class="titulo">Preenche os dados da nossa Landing Page para baixar e-books, e outras informações</p>
+		<br>
+		<p class="corpo-texto">O ebook contém uma ficha de Setup Social, onde você poderá guardar de maneira segura, as informações necessárias das suas contas sociais.O Setup de Mídias Digitais também aborda histórias das rede sociais: Facebook, Youtube, Instagram e Twitter.</p>
+		<br>
+</div>	
+<div id="corpo-form">	
+           <form method="Post" action="ebook.php">
+	  			<input type="text" name="nome" placeholder="Digite o nome" maxlength="100">
+				<input type="text" name="idade"   placeholder="Digite o  idade" maxlength="10">
+				<input type="text" name="telefone" placeholder="Digite o telefone" maxlength="13">
+				
+        		<input name="cep" type="text" placeholder="Digite o cep" id="cep" size="13" value=""  maxlength="9"
+               onblur="pesquisacep(this.value);" />
+        		<input name="rua" type="text" id="rua"  />
+        		<input name="bairro" type="text" id="bairro" size="10" />
+        		<input name="cidade" type="text" id="cidade" size="8"  />
+        		<input name="uf" type="text" id="uf" size="2" />
+        		<input name="ibge" type="hidden" id="ibge"  />
+      			
+				<input type="submit" name="postar" value="Postar">			
+			</form>
+</div>
+<div id="ebook">
+		 		<img src="setup_social.jpg" widht="215" height="317">
+				<p class="desc-imagem">Imagem do E-book é propriedade de backsite.com.br</p>
+				</div>
+<div id="clear"></div>
+<footer>
+<div id="rodape">
+		Desenvolvido por Alexandre Biangaman Aleixo<br>
+		Imagem do E-book é propriedade de backsite.com.br<br>
+		CEP utilizando webservices VIACEP
+</div>
+</footer>
+
+</body>
+</html>
